@@ -18,7 +18,7 @@ class Koa {
         if (!middleware) {
           return Promise.resolve()
         }
-        return middleware(ctx, () => {dispatch(++index)})
+        return middleware(ctx, () => dispatch(++index))
       }
       return Promise.resolve(dispatch(index))
     }
