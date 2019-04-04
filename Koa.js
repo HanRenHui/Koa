@@ -1,5 +1,7 @@
 const http = require('http')
-
+const url = require('url')
+const mime = require('mime')
+const Stream = require('stream')
 class Koa {
   constructor () {
     this.middlewares = []
@@ -24,8 +26,11 @@ class Koa {
   }
   handle_response (ctx) {
     let body = ctx.body 
+    ctx.res.setHeader('content-type', mime.getType(body))
     if (typeof body === 'string') {
       ctx.res.end(body)
+    } else if (body instanceof Stream) {
+      body.pipe(ctx.res)
     }
   }
   listen (...params) {
@@ -33,9 +38,9 @@ class Koa {
       let ctx = {}
       ctx.req = req
       ctx.res = res 
+      ctx.path = url.parse(req.url).pathname
       let fnMiddleware = this.compose(this.middlewares, ctx)
       fnMiddleware().then(() => {
-        console.log('test');
         
         this.handle_response(ctx)
       }).catch(() => {
