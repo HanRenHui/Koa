@@ -3,7 +3,6 @@ const http = require('http')
 class Koa {
   constructor () {
     this.middlewares = []
-    this.ctx = {}
   }
 
   use (cb) {
@@ -31,13 +30,14 @@ class Koa {
   }
   listen (...params) {
     http.createServer((req, res) => {
-      this.ctx.req = req
-      this.ctx.res = res 
-      let fnMiddleware = this.compose(this.middlewares, this.ctx)
+      let ctx = {}
+      ctx.req = req
+      ctx.res = res 
+      let fnMiddleware = this.compose(this.middlewares, ctx)
       fnMiddleware().then(() => {
         console.log('test');
         
-        this.handle_response(this.ctx)
+        this.handle_response(ctx)
       }).catch(() => {
 
       })
