@@ -23,13 +23,21 @@ class Koa {
       return Promise.resolve(dispatch(index))
     }
   }
+  handle_response (ctx) {
+    let body = ctx.body 
+    if (typeof body === 'string') {
+      ctx.res.end(body)
+    }
+  }
   listen (...params) {
     http.createServer((req, res) => {
       this.ctx.req = req
       this.ctx.res = res 
       let fnMiddleware = this.compose(this.middlewares, this.ctx)
       fnMiddleware().then(() => {
-        res.end()
+        console.log('test');
+        
+        this.handle_response(this.ctx)
       }).catch(() => {
 
       })
