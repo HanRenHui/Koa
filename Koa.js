@@ -21,12 +21,13 @@ class Koa {
         }
         return middleware(ctx, () => dispatch(++index))
       }
-      return Promise.resolve(dispatch(index))
+      return dispatch(index)
     }
   }
+
   handle_response (ctx) {
     let body = ctx.body 
-    ctx.res.setHeader('content-type', mime.getType(body))
+    // ctx.res.setHeader('content-type', mime.getType(body))
     if (typeof body === 'string') {
       ctx.res.end(body)
     } else if (body instanceof Stream) {
@@ -41,10 +42,10 @@ class Koa {
       ctx.path = url.parse(req.url).pathname
       let fnMiddleware = this.compose(this.middlewares, ctx)
       fnMiddleware().then(() => {
-        
         this.handle_response(ctx)
-      }).catch(() => {
-
+      }).catch(err => {
+        console.log(err);
+        
       })
     }).listen(...params)
   }
