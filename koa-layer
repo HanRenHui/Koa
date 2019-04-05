@@ -1,0 +1,6 @@
+module.exports = class Layer {
+  constructor (path, handler) {
+    this.path = path 
+    this.handler = handler 
+  }
+}
